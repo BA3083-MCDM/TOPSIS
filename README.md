@@ -47,7 +47,7 @@ If you do not provide `flag`, all criteria are treated as benefit criteria by de
 ## Quick Example
 
 ```python
-from TOPSIS import TOPSIS
+from models.TOPSIS import TOPSIS
 
 decision_matrix = [
     [7, 9, 9],
