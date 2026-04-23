@@ -1,6 +1,6 @@
 # TOPSIS
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/<YOUR_USERNAME>/<YOUR_REPO>/blob/main/examples/TOPSIS.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zihenglyu/TOPSIS/blob/main/examples/TOPSIS.ipynb)
 
 
 This repository contains a simple Python implementation of **TOPSIS** (Technique for Order Preference by Similarity to Ideal Solution) for multi-criteria decision making.
