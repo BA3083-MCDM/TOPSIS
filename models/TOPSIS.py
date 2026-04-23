@@ -1,14 +1,14 @@
 import numpy as np
 
 class TOPSIS:
-    def __init__(self, decision_matrix, weight_vector, flag=None):
+    def __init__(self, decision_matrix, weight_vector, criteria_type=None):
         """Initialize data and run all TOPSIS computation steps.
 
         Parameters:
             decision_matrix: 2D data for alternatives (rows) vs criteria (columns).
             weight_vector: 1D array of criterion weights.
-            flag: Optional list where True means benefit criterion (higher is better)
-                  and False means cost criterion (lower is better).
+            criteria_type: Optional list where 1 means benefit criterion (higher is better)
+                           and 0 means cost criterion (lower is better).
         """
         self.decision_matrix = np.array(decision_matrix, dtype=float)
         self.weight_vector = np.array(weight_vector, dtype=float)
@@ -17,9 +17,9 @@ class TOPSIS:
         assert self.decision_matrix.shape[1] == self.weight_vector.shape[0]
 
         # If not provided, treat all criteria as benefit criteria by default.
-        if flag is None:
-            flag = [True] * self.decision_matrix.shape[1]
-        self.flag = flag
+        if criteria_type is None:
+            criteria_type = [1] * self.decision_matrix.shape[1]
+        self.criteria_type = criteria_type
 
         # Step 1: Normalize each criterion column (vector normalization).
         self.standardized_matrix = self.func_StandardizeDecisionMatrix(self.decision_matrix)
@@ -31,12 +31,12 @@ class TOPSIS:
         # Step 3: Compute squared distances to positive ideal for each criterion.
         self.positive_ideal_solution = self.func_PositiveIdealSolution(
             self.weighted_standardized_matrix,
-            self.flag
+            self.criteria_type
         )
         # Step 4: Compute squared distances to negative ideal for each criterion.
         self.negative_ideal_solution = self.func_NegativeIdealSolution(
             self.weighted_standardized_matrix,
-            self.flag
+            self.criteria_type
         )
         # Step 5: Convert distances into relative closeness scores (final ranking basis).
         self.relative_closeness = self.func_IdealSolutionRelativeCloseness(
@@ -63,18 +63,18 @@ class TOPSIS:
         return weighted_standardized_matrix
 
     @classmethod
-    def func_PositiveIdealSolution(cls, input_matrix, flag=None):
+    def func_PositiveIdealSolution(cls, input_matrix, criteria_type=None):
         """Build squared-distance components to the positive ideal solution.
 
         Benefit criterion: ideal is column max.
         Cost criterion: ideal is column min.
         """
-        if flag is None:
-            flag = [True] * input_matrix.shape[1]
+        if criteria_type is None:
+            criteria_type = [1] * input_matrix.shape[1]
 
         output_matrix = np.zeros(input_matrix.shape)
         for i in range(input_matrix.shape[1]):
-            if flag[i]:
+            if criteria_type[i] == 1:
                 # Distance to best (max) for benefit criterion.
                 output_matrix[:, i] = (input_matrix[:, i] - np.max(input_matrix[:, i])) ** 2
             else:
@@ -83,18 +83,18 @@ class TOPSIS:
         return output_matrix
 
     @classmethod
-    def func_NegativeIdealSolution(cls, input_matrix, flag=None):
+    def func_NegativeIdealSolution(cls, input_matrix, criteria_type=None):
         """Build squared-distance components to the negative ideal solution.
 
         Benefit criterion: negative ideal is column min.
         Cost criterion: negative ideal is column max.
         """
-        if flag is None:
-            flag = [True] * input_matrix.shape[1]
+        if criteria_type is None:
+            criteria_type = [1] * input_matrix.shape[1]
 
         output_matrix = np.zeros(input_matrix.shape)
         for i in range(input_matrix.shape[1]):
-            if flag[i]:
+            if criteria_type[i] == 1:
                 # Distance to worst (min) for benefit criterion.
                 output_matrix[:, i] = (input_matrix[:, i] - np.min(input_matrix[:, i])) ** 2
             else:
